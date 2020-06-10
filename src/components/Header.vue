@@ -5,14 +5,25 @@
         <div class="logo-container">
           <a class="logo" href></a>
         </div>
-        <div class="operate-container" @click="dialogVisible=true">登录/注册</div>
+        <div class="operate-container" @click="dialogVisible=true" v-if="!userInfo.id">登录/注册</div>
+        <div class="operate-container" v-if="userInfo.id">
+          <el-dropdown @command="more">
+            <span class="el-dropdown-link">
+              {{userInfo.username}}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="outlogin">退出</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
         <div class="clear-both"></div>
       </div>
     </section>
 
     <!-- 注册、登录弹窗 -->
     <el-dialog
-      :title="type===0?'注册':'登录'"
+      :title="dialogType===0?'注册':'登录'"
       :visible.sync="dialogVisible"
       width="20%"
       center
@@ -22,7 +33,7 @@
         <el-form-item>
           <el-input placeholder="输入手机号码" prefix-icon="el-icon-mobile-phone" v-model="form.phone"></el-input>
         </el-form-item>
-        <el-form-item v-if="type===0">
+        <el-form-item v-if="dialogType===0">
           <el-input placeholder="手机验证码" v-model="form.phone_code">
             <template slot="append">
               <el-button @click="getPhoneCode" :disabled="sendPhoneCode">
@@ -35,19 +46,19 @@
         <el-form-item>
           <el-input placeholder="输入密码" prefix-icon="el-icon-view" v-model="form.password"></el-input>
         </el-form-item>
-        <el-form-item v-if="type===0">
+        <el-form-item v-if="dialogType===0">
           <el-input placeholder="确认密码" prefix-icon="el-icon-view" v-model="form.re_password"></el-input>
         </el-form-item>
-        <el-form-item v-if="type===0">
+        <el-form-item v-if="dialogType===0">
           <el-input placeholder="输入真实姓名" prefix-icon="el-icon-view" v-model="form.real_name"></el-input>
         </el-form-item>
-        <el-form-item v-if="type===0">
+        <el-form-item v-if="dialogType===0">
           <el-input placeholder="输入身份证号" prefix-icon="el-icon-view" v-model="form.id_card"></el-input>
         </el-form-item>
       </el-form>
       <div>
-        <el-button type="text" v-if="type===0" @click="type=1">登录</el-button>
-        <el-button type="text" v-if="type===1" @click="type=0">注册</el-button>
+        <el-button type="text" v-if="dialogType===0" @click="dialogType=1">登录</el-button>
+        <el-button type="text" v-if="dialogType===1" @click="dialogType=0">注册</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="ok">确 定</el-button>
@@ -63,7 +74,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      type: 1, // 0为注册 1为登录
+      dialogType: 1, // 0为注册 1为登录
       title: "注册",
       form: {
         phone: "", // 手机号-11位
@@ -74,7 +85,8 @@ export default {
         id_card: "" //身份证号-20位以内
       },
       sendPhoneCode: false, // 是否发送手机验证码
-      count: 60 // 倒计时
+      count: 60, // 倒计时
+      userInfo: {} // 用户信息
     };
   },
   methods: {
@@ -87,8 +99,7 @@ export default {
         .fetchPost("/homevideo_send_phone_code", params)
         .then(data => {
           if (data.data.state === 0) {
-            console.error(data.data.content.code);
-            // this.form.phone_code = data.data.content.code;
+            console.logo(data.data.content.code);
             this.countDown();
           } else {
             this.$message.error(data.data.msg);
@@ -113,7 +124,7 @@ export default {
     },
     // 确认
     ok() {
-      if (this.type === 0) {
+      if (this.dialogType === 0) {
         this.registerFun();
       } else {
         this.loginFun();
@@ -131,9 +142,10 @@ export default {
           if (data.data.state === 0) {
             this.$message.success(data.data.msg);
             window.localStorage.setItem(
-              "unique_token",
-              data.data.data.unique_token
+              "userInfo",
+              JSON.stringify(data.data.data)
             );
+            this.getUserInfo();
             this.handleClose();
           } else {
             this.$message.error(data.data.msg);
@@ -158,7 +170,7 @@ export default {
         .then(data => {
           if (data.data.state === 0) {
             this.$message.success(data.data.msg);
-            this.handleClose();
+            this.dialogType = 1;
           } else {
             this.$message.error(data.data.msg);
           }
@@ -170,7 +182,21 @@ export default {
     // 弹窗关闭
     handleClose() {
       this.dialogVisible = false;
+    },
+    // 更多操作
+    more(command) {
+      if (command === "outlogin") {
+        window.localStorage.removeItem("userInfo");
+        this.getUserInfo();
+      }
+    },
+    // 获取用户信息
+    getUserInfo() {
+      this.userInfo = JSON.parse(window.localStorage.getItem("userInfo")) || {};
     }
+  },
+  mounted() {
+    this.getUserInfo();
   }
 };
 </script>
