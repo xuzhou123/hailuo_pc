@@ -39,11 +39,11 @@ export default {
   min-height: 700px;
   padding: 16px 0;
   .detail-container {
-    height: 600px;
-    background: #eee;
+    background: #232325;
     text-align: center;
     .video-container {
-      height: calc(100% - 100px);
+      height: 500px;
+      padding-top: 20px;
       video {
         height: 100%;
         object-fit: cover;
@@ -58,6 +58,7 @@ export default {
       text-align: center;
       padding: 0 100px;
       font-weight: 700;
+      color: #fff;
     }
   }
 }

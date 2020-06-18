@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: "Index",
   data() {
@@ -33,11 +34,19 @@ export default {
       lists: [] // 数据
     };
   },
+  computed: {
+    ...mapGetters(['activeNavCode'])
+  },
+  watch: {
+    activeNavCode(newVal, oldVal) {
+      this.getLists();
+    }
+  },
   methods: {
-    // 获取验证码
+    // 获取列表 
     getLists() {
       let params = {
-        search_type: "all"
+        search_type: this.activeNavCode
       };
       this.$axios
         .fetchPost("/home_video_list", params)

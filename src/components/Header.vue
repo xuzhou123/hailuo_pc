@@ -5,6 +5,9 @@
         <div class="logo-container">
           <a class="logo" href></a>
         </div>
+        <ul class="nav-lists">
+          <li v-for="item in navLists" :key="item.id" :class="{'active':activeNavCode==item.code}" @click="changeNav(item)">{{item.label}}</li>
+        </ul>
         <div class="operate-container" @click="dialogVisible=true" v-if="!userInfo.id">登录/注册</div>
         <div class="operate-container" v-if="userInfo.id">
           <el-dropdown @command="more">
@@ -68,6 +71,7 @@
 </template>
 
 <script>
+import { mapState,mapGetters } from 'vuex'
 import axios from "axios";
 export default {
   name: "Header",
@@ -86,8 +90,31 @@ export default {
       },
       sendPhoneCode: false, // 是否发送手机验证码
       count: 60, // 倒计时
-      userInfo: {} // 用户信息
+      userInfo: {}, // 用户信息
+      navLists: [
+        {
+          id: 1,
+          label: '全部',
+          code: 'all'
+        },
+        {
+          id: 2,
+          label: '首页',
+          code: 'shouye'
+        },
+        {
+          id: 3,
+          label: '京剧',
+          code: 'jingju'
+        }
+      ]
     };
+  },
+  computed: {
+    // ...mapState({
+    //   activeNavCode: state => state.activeNavCode
+    // }),
+    ...mapGetters(['activeNavCode'])
   },
   methods: {
     // 获取验证码
@@ -193,6 +220,13 @@ export default {
     // 获取用户信息
     getUserInfo() {
       this.userInfo = JSON.parse(window.localStorage.getItem("userInfo")) || {};
+    },
+    // 切换导航
+    changeNav(item) {
+      this.$store.dispatch('setActiveNavCode',item.code)
+      this.$router.push({
+        path: "/"
+      });
     }
   },
   mounted() {
@@ -219,6 +253,22 @@ export default {
         height: 29px;
         margin-top: 15px;
         background-image: url(../assets/logos.png);
+      }
+    }
+    .nav-lists {
+      float: left;
+      height:100%;
+      margin-left: 50px;
+      display: flex;
+      align-items: center;
+      li {
+        padding: 10px 16px;
+        font-size: 16px;
+        cursor: pointer;
+        &.active {
+          background:#f90;
+          color: #fff;
+        }
       }
     }
     .operate-container {
