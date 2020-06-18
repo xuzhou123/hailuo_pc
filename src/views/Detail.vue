@@ -3,7 +3,7 @@
     <section class="detail">
       <div class="w1280 detail-container">
         <div class="video-container">
-          <video controls>
+          <video controls autoplay="autoplay">
             <source :src="videoUrl" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。
             <!-- <source src="../assets/movie.mp4" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。 -->
           </video>
