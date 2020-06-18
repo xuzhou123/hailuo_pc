@@ -12,7 +12,7 @@
               />-->
               <img
                 class="avatar"
-                src="http://qiniu.hailuolive.com/20200531/users_5ed37bb1a2647.jpeg"
+                :src="item.img_url"
                 alt
               />
             </a>
