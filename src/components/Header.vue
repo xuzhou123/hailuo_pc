@@ -126,7 +126,7 @@ export default {
         .fetchPost("/homevideo_send_phone_code", params)
         .then(data => {
           if (data.data.state === 0) {
-            console.logo(data.data.content.code);
+            console.log(data.data.content.code);
             this.countDown();
           } else {
             this.$message.error(data.data.msg);
