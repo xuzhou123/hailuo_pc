@@ -245,14 +245,14 @@ export default {
     .logo-container {
       float: left;
       .logo {
-        background-position: 0 -23px;
         background-repeat: no-repeat;
         overflow: hidden;
         display: block;
         width: 160px;
-        height: 29px;
-        margin-top: 15px;
-        background-image: url(../assets/logos.png);
+        height: 40px;
+        margin-top: 10px;
+        background-image: url(../assets/logo1.png);
+        background-size: auto 40px;
       }
     }
     .nav-lists {

@@ -4,7 +4,7 @@
       <div id="doc-ft">
         <div class="container">
           <p>
-            <a href="#">直播文明公约</a>
+            <a href="#">文明公约</a>
             <!--agree_live.html-->
             <span>|</span>
             <a href="#">社区公约</a>
